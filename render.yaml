@@ -1,0 +1,32 @@
+services:
+- type: web
+  name: ackee
+  env: docker
+  autoDeploy: false
+  envVars: # https://docs.ackee.electerious.com/#/docs/Options
+  - key: ACKEE_USERNAME
+    value: "render"
+  - key: ACKEE_PASSWORD
+    generateValue: true
+  - key: ACKEE_PORT
+    value: 80
+  # Once you know the domains being tracked, consider adding them here:
+  # See https://docs.ackee.electerious.com/#/docs/CORS%20headers
+  - key: ACKEE_ALLOW_ORIGIN
+    value: "*"
+  - key: MONGODB_HOSTPORT
+    fromService:
+      type: pserv
+      name: ackee-mongodb
+      property: hostport
+  - key: MONGODB_DATABASE
+    value: "ackee"
+- type: pserv
+  name: ackee-mongodb
+  env: docker
+  repo: https://github.com/render-examples/mongodb.git
+  autoDeploy: false
+  disk:
+    name: data
+    mountPath: /data/db
+    sizeGB: 10
